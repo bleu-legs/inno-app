@@ -3,9 +3,217 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <title>Login to Bleu Legs</title>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        #particles-js {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #f5f5f5;
+            z-index: 1;
+        }
+        .login-container {
+            position: relative;
+            z-index: 10;
+            padding: 2rem;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0);
+            box-shadow: 0 8px 32px 0 rgba(0, 108, 224, 0.37);
+            backdrop-filter: blur(1.5px);
+            -webkit-backdrop-filter: blur(1.5px);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        .login-container h1 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            color: #333;
+        }
+        .group {
+            display: flex;
+            line-height: 30px;
+            align-items: center;
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        .input {
+            width: 100%;
+            height: 45px;
+            line-height: 30px;
+            padding: 0 5rem;
+            padding-left: 1rem;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            outline: none;
+            background-color: #fff;
+            color: #333;
+            transition: 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 108, 224, 0.1);
+        }
+
+        .input::placeholder {
+            color: #888;
+        }
+
+        .input:focus, .input:hover {
+            outline: none;
+            border-color: #006ce0;
+            background-color: #f5f5ff;
+            box-shadow: 0 0 10px rgba(0, 108, 224, 0.3);
+        }
+        .login-button {
+            width: 100%;
+            padding: 0.8rem;
+            background-color: #006ce0;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .login-button:hover {
+            background-color: #0351a5;
+        }
+        .error {
+            color: red;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        .notification {
+            position: fixed;
+            top: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 25px;
+            font-size: 16px;
+            opacity: 0;
+            visibility: hidden;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+            transition: top 0.5s ease, opacity 0.5s ease, visibility 0s linear 0.5s;
+            z-index: 9999;
+        }
+
+        .notification.show {
+            visibility: visible;
+            top: 20px;
+            opacity: 1;
+            transition: top 0.5s ease, opacity 0.5s ease;
+        }
+    </style>
 </head>
 <body>
-    <h1>hello world</h1>
+    <div id="particles-js"></div>
+
+    <div id="notification" class="notification">
+        This is an Android-style toast notification!
+    </div>
+
+    <div class="login-container">
+        <h1>Bleu Legs</h1>
+        <form id="loginForm">
+            <div class="group">
+                  <input class="input" type="text" id="username" placeholder="Username">
+              </div>
+
+            <div class="group">
+                <input class="input" type="password" id="password" placeholder="Password">
+            </div>
+            <button type="submit" class="login-button">Login</button>
+            <div class="error" id="errorMessage"></div>
+        </form>
+    </div>
+
+    <script>
+        particlesJS('particles-js', {
+            particles: {
+                number: {
+                    value: 40,
+                },
+                color: { value: "#006ce0" },
+                shape: {
+                    type: "circle",
+                },
+                opacity: {
+                    value: 0.4,
+                },
+                size: {
+                    value: 3,
+                },
+                line_linked: {
+                    enable: true,
+                    distance: 140,
+                    color: "#006ce0",
+                    opacity: 0.5,
+                    width: 1.5,
+                },
+                move: {
+                    enable: true,
+                    speed: 1.2,
+                    direction: "none",
+                    random: false,
+                    straight: false,
+                }
+            },
+            interactivity: {
+                events: {
+                    onhover: {
+                        enable: false,
+                    },
+                    onclick: {
+                        enable: false,
+                    }
+                },
+            },
+            retina_detect: true,
+        });
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 7000);
+        }
+
+        const loginForm = document.getElementById('loginForm');
+        const errorMessage = document.getElementById('errorMessage');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+
+        loginForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const username = usernameInput.value;
+            const password = passwordInput.value;
+
+            if (username && password) {
+                showNotification("Logging in...");
+            } else {
+                showNotification("Fill in both fields")
+            }
+        });
+
+        console.log("%cWARNING!", "color: red; font-size: 200%;"),
+        console.log("The browser console is a developer tool not intended for use by DayScope users. DO NOT copy and paste any code in this window.");
+    </script>
 </body>
-</html>
